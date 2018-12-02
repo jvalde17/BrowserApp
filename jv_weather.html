@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather</title>
+    <style>
+            table, th, td {
+                border: 1px solid black;
+                border-collapse: collapse;
+            }
+            </style>
+</head>
+
+
+<!-- API Key 422b536163764ccf925172034181711 
+    Protocol HTTP
+    Format JSON
+-->
+<body onload="getAllWeatherAll()">
+        <h2>jvalde17 Weather App:</h2>
+        
+        <div><p id="average_hotest"></p> </div><br>
+        
+        <div style="display: inline-block" id='buttons'>
+                <div><button id=forcastbtn1>forecast</button> </div><br><br>
+                <div><button id=forcastbtn2>forecast</button> </div><br>
+        </div>
+
+        <div style="display: inline-block" id='output'></div>
+        <div style="display: inline-block">
+                <select id='select_city'>
+                        <option value="San Francisco">San Francisco</option>
+                        <option value="Miami">Miami</option>
+                        <option value="Seattle">Seattle</option>
+                        <option value="New York">New York</option>
+                        <option value="Honolulu">Honolulu</option>
+                      </select><br>
+        </div><br><br>
+        
+        <div>
+                <p id="forecast"></p>
+        </div><br>
+
+        <div><button id=refreshbtn>refresh page</button> </div>
+
+<script>
+//Listener for the pulldown menu to select city    
+document.getElementById('select_city').addEventListener
+    ('click', getAllWeatherTwoCities);
+
+//Listener for refresh page button
+document.getElementById('refreshbtn').addEventListener
+    ('click', getAllWeatherAll);    
+
+//Listener for forecast1
+document.getElementById('forcastbtn1').addEventListener
+    ('click', getForecast_A);  
+
+//Listener for forecast2 (the second city that is selected)
+document.getElementById('forcastbtn2').addEventListener
+    ('click', getForecast_B); 
+
+//Onload and refresh function
+function getAllWeatherAll() {
+    url1 = getCityURL("San Jose");
+
+    var mycity = document.getElementById("select_city");
+    url2 = getCityURL(mycity.value);
+    getMyLocalWeatherData(url1, url2);
+
+    document.getElementById('forecast').innerHTML = '';
+    getAveAndHotest();
+ }
+
+//Top function to Update only the table data for two cities
+function getAllWeatherTwoCities() {
+    url1 = getCityURL("San Jose");
+
+    var mycity = document.getElementById("select_city");
+    url2 = getCityURL(mycity.value);
+    getMyLocalWeatherData(url1, url2);
+}
+
+//Button function for San Jose
+function getForecast_A() {
+    fetch(getCityURLForecast("San Jose"))
+        .then((res) => res.json())
+        .then((data) => {
+            let output = `<h4>${data.location.name} forecast for ${data.forecast.forecastday[1].date}</h4>`;
+            output += `
+                <ul>
+                    <li>Max Temperature: ${data.forecast.forecastday[1].day.maxtemp_c}C</li>
+                    <li>Min Temperature: ${data.forecast.forecastday[1].day.mintemp_c}C</li>
+                    <li>Ave Temperature: ${data.forecast.forecastday[1].day.avgtemp_c}C</li>
+                    <li>Condition: ${data.forecast.forecastday[1].day.condition.text}</li>
+                    <li><img src= ${data.forecast.forecastday[1].day.condition.icon}> </li>
+                    <li>Total Precipitation: ${data.forecast.forecastday[1].day.totalprecip_mm} mm.</li>
+                    <li>Ave Humidity: ${data.forecast.forecastday[1].day.avghumidity} </li>
+                    <li>Max Wind: ${data.forecast.forecastday[1].day.maxwind_kph} Kph/${data.forecast.forecastday[1].day.maxwind_mph} Mph </li>
+                    <li>Ave Visibility: ${data.forecast.forecastday[1].day.avgvis_km} Km./${data.forecast.forecastday[1].day.avgvis_miles} Mi.</li>
+                    <li>Sunrise: ${data.forecast.forecastday[1].astro.sunrise}</li>
+                    <li>Sunset: ${data.forecast.forecastday[1].astro.sunset}</li>
+                    <li>Moonrise: ${data.forecast.forecastday[1].astro.moonrise}</li>
+                    <li>Moonset: ${data.forecast.forecastday[1].astro.moonset}</li>
+                </ul>
+                
+                `;
+                document.getElementById('forecast').innerHTML = output;
+        }
+        ).catch(function() {
+            console.log("error");
+        })
+}
+
+//Button function for the second city
+function getForecast_B() {
+    var mycity = document.getElementById("select_city");
+    console.log(mycity.value);
+    url = getCityURLForecast(mycity.value);
+
+    console.log(url);
+
+    fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+            let output = `<h4>${data.location.name} forecast for ${data.forecast.forecastday[1].date}</h4>`;
+            output += `
+                <ul>
+                    <li>Max Temperature: ${data.forecast.forecastday[1].day.maxtemp_c}C</li>
+                    <li>Min Temperature: ${data.forecast.forecastday[1].day.mintemp_c}C</li>
+                    <li>Ave Temperature: ${data.forecast.forecastday[1].day.avgtemp_c}C</li>
+                    <li>Condition: ${data.forecast.forecastday[1].day.condition.text}</li>
+                    <li><img src= ${data.forecast.forecastday[1].day.condition.icon}> </li>
+                    <li>Total Precipitation: ${data.forecast.forecastday[1].day.totalprecip_mm} mm.</li>
+                    <li>Ave Humidity: ${data.forecast.forecastday[1].day.avghumidity} </li>
+                    <li>Max Wind: ${data.forecast.forecastday[1].day.maxwind_kph} Kph/${data.forecast.forecastday[1].day.maxwind_mph} Mph </li>
+                    <li>Ave Visibility: ${data.forecast.forecastday[1].day.avgvis_km} Km./${data.forecast.forecastday[1].day.avgvis_miles} Mi.</li>
+                    <li>Sunrise: ${data.forecast.forecastday[1].astro.sunrise}</li>
+                    <li>Sunset: ${data.forecast.forecastday[1].astro.sunset}</li>
+                    <li>Moonrise: ${data.forecast.forecastday[1].astro.moonrise}</li>
+                    <li>Moonset: ${data.forecast.forecastday[1].astro.moonset}</li>
+                </ul>
+                `;
+                document.getElementById('forecast').innerHTML = output;
+        }
+        ).catch(function() {
+            console.log("error");
+        })
+}
+//Get current weather for the 2 cities in the table
+function getMyLocalWeatherData(urlstr1, urlstr2) {
+        fetch(urlstr1)
+        .then((res) => res.json())
+        .then((data) => fetch(urlstr2)
+        .then((res2) => res2.json())
+        .then((data2) => { 
+            //console.log(data);
+            let output = `
+            <table style="width:100%">
+            <tr>
+                <th> City </th>
+                <th> Last update </th>
+                <th> Temperature </th>
+                <th> Wind speed </th>
+                <th> Visibility </th>
+            </tr>
+            <tr>
+                <td>${data.location.name}<br> ${data.location.region}</td>
+                <td>${data.location.localtime}</td>
+                <td>${data.current.temp_c}C<br>Feels like ${data.current.feelslike_c} C</td>
+                <td>${data.current.wind_kph} KPH</td>
+                <td>${data.current.vis_km} Km.</td>
+            </tr>
+            `;
+            if (data.current.temp_c < 20) {
+                output += `
+                <tr>
+                        <td colspan="5" >Condition is ${data.current.condition.text}</td>    
+                </tr>
+                `;
+            }
+            output += `
+            <tr>
+                <td>${data2.location.name}<br>${data2.location.region}</td>
+                <td>${data2.location.localtime}</td>
+                <td>${data2.current.temp_c}C <br>Feels like ${data2.current.feelslike_c} C</td>
+                <td>${data2.current.wind_kph} KPH</td>
+                <td>${data2.current.vis_km} Km.</td>
+            </tr>
+            `;
+            if (data2.current.temp_c < 20) {
+                output += `
+                <tr>
+                        <td colspan="5" >Condition is ${data2.current.condition.text}</td>    
+                </tr>
+                `;
+            }
+           
+               // <td>icon</td>
+               // <td><img src= ${data.current.condition.icon}></td>
+              document.getElementById('output').innerHTML = output;
+              //Calculate the value for id="average_hotest"    
+        })  
+        .catch(function() {
+            console.log("error");
+        })
+        
+        )
+    }
+
+
+
+//Get Average and hottest of 6 cities
+function getAveAndHotest() {
+    var allTemps=0;
+    var temp;
+    var hottestCity;
+    var hottestTemp;
+    var average;
+    fetch(getCityURL("San Jose"))
+        .then((res) => res.json())
+            .then((data0) => fetch(getCityURL("San Francisco"))
+                .then((res) => res.json())
+                    .then((data1) => fetch(getCityURL("Miami"))
+                        .then((res) => res.json())
+                            .then((data2) => fetch(getCityURL("Seattle"))
+                                .then((res) => res.json())
+                                    .then((data3) => fetch(getCityURL("New York"))
+                                        .then((res) => res.json())
+                                            .then((data4) =>  fetch(getCityURL("Honolulu"))
+                                                .then((res) => res.json())
+                                                    .then((data5) =>{
+                                                        temp = data0.current.temp_c;
+                                                        hottestTemp= temp;
+                                                        hottest = data0.location.name;
+                                                        allTemps += temp;
+
+                                                        temp = data1.current.temp_c;
+                                                        if (temp > hottestTemp) {
+                                                            hottestTemp = temp;
+                                                            hottestCity = data1.location.name;
+                                                        }
+                                                        allTemps += temp;
+
+                                                        temp = data2.current.temp_c;
+                                                        if (temp > hottestTemp) {
+                                                            hottestTemp = temp;
+                                                            hottestCity = data2.location.name;
+                                                        }
+                                                        allTemps += temp;
+
+                                                        temp = data3.current.temp_c;
+                                                        if (temp > hottestTemp) {
+                                                            hottestTemp = temp;
+                                                            hottestCity = data3.location.name;
+                                                        }
+                                                        allTemps += temp;
+
+                                                        temp = data4.current.temp_c;
+                                                        if (temp > hottestTemp) {
+                                                            hottestTemp = temp;
+                                                            hottestCity = data4.location.name;
+                                                        }
+                                                        allTemps += temp;
+
+                                                        temp = data5.current.temp_c;
+                                                        if (temp > hottestTemp) {
+                                                            hottestTemp = temp;
+                                                            hottestCity = data5.location.name;
+                                                        }
+                                                        allTemps += temp;
+                                                        average = allTemps / 6.0;
+                                                        console.log("Average = " + average);
+            var finalStr = "The average temperature is " + average.toFixed(2);
+            finalStr += "C and the hottest city is " + hottestCity + ".";
+            document.getElementById('average_hotest').innerHTML = finalStr; 
+                                                    })
+                                                    .catch(function() {
+                                                    console.log("error");
+        }))))))
+        
+    }
+
+//Get current weather URL
+function getCityURL(thiscity) {
+        var url;
+
+        switch(thiscity) {
+            case "San Jose": 
+            url = 'http://api.apixu.com/v1/current.json?key=422b536163764ccf925172034181711&q=95132&days=1';
+            break;
+            case "San Francisco": 
+            url = 'http://api.apixu.com/v1/current.json?key=422b536163764ccf925172034181711&q=94129&days=1';
+            break;
+            case "Miami": 
+            url = 'http://api.apixu.com/v1/current.json?key=422b536163764ccf925172034181711&q=33101&days=1';
+            break;
+            case "Seattle": 
+            url = 'http://api.apixu.com/v1/current.json?key=422b536163764ccf925172034181711&q=98101&days=1';
+            break;
+            case "New York": 
+            url = 'http://api.apixu.com/v1/current.json?key=422b536163764ccf925172034181711&q=10001&days=1';
+            break;
+            case "Honolulu": 
+            url = 'http://api.apixu.com/v1/current.json?key=422b536163764ccf925172034181711&q=96817&days=1';
+            break;
+    }
+        return url;
+    }
+//Get forecast weather URL for tomorrow
+function getCityURLForecast(thiscity) {
+        var url;
+
+        switch(thiscity) {
+            case "San Jose": 
+            url = 'http://api.apixu.com/v1/forecast.json?key=422b536163764ccf925172034181711&q=95132&days=3';
+            break;
+            case "San Francisco": 
+            url = 'http://api.apixu.com/v1/forecast.json?key=422b536163764ccf925172034181711&q=94129&days=3';
+            break;
+            case "Miami": 
+            url = 'http://api.apixu.com/v1/forecast.json?key=422b536163764ccf925172034181711&q=33101&days=3';
+            break;
+            case "Seattle": 
+            url = 'http://api.apixu.com/v1/forecast.json?key=422b536163764ccf925172034181711&q=98101&days=3';
+            break;
+            case "New York": 
+            url = 'http://api.apixu.com/v1/forecast.json?key=422b536163764ccf925172034181711&q=10001&days=3';
+            break;
+            case "Honolulu": 
+            url = 'http://api.apixu.com/v1/forecast.json?key=422b536163764ccf925172034181711&q=96817&days=3';
+            break;
+    }
+        return url;
+    }
+</script>
+
+    
+</body>
+</html>

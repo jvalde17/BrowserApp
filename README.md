@@ -1,1 +1,4 @@
-# BrowserApp: \n Browser only Apps\n 1. Exchange Rate Calculator
+# BrowserApp: Browser only Apps:
+ 1. Exchange Rate Calculator
+ 2. Weather App.
+ 

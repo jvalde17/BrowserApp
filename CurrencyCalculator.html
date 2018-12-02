@@ -1,0 +1,139 @@
+<!--Currency converter html app
+SER421 Extra Credit 
+@author Jess Valdez (jvlade17) -->
+
+<!DOCTYPE html>
+<html>
+<head>
+        <title>Currency Converter</title>
+<style>
+.button {
+    background-color: rgb(79, 128, 192);
+    border: 2px solid rgb(73, 65, 65);
+    color: white;
+    padding: 4px 35px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    margin: auto;
+    height: 30px;
+    position: relative; 
+    left: 50px; 
+    top: 90px; 
+}
+.buttonB {
+    background-color: rgb(79, 128, 192);
+    border: 2px solid rgb(73, 65, 65);
+    color: white;
+    padding: 4px 35px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    margin: auto;
+    height: 30px;
+    position: relative;
+    left: 250px; 
+    top: 90px; 
+}
+.input {
+    position: absolute;
+    width: 100%;
+    text-align: left;
+    overflow: auto;
+    margin: auto;
+    left: 130px; 
+}
+.result {
+    position: relative;
+    width: 100%;
+    text-align: left;
+    overflow: auto;
+    margin: auto;
+    left: 80px; 
+    top: 70px; 
+}
+</style>
+</head>
+<body>
+
+<h3>US Currency Converter</h3><br>
+<div class="input">
+Enter dollars (US): <input type="text" id="inputval" name="pin" maxlength="14" size="14"><br><br>
+Select Foreign Currency: 
+
+<select id="selectCur">
+        <option value="POUNDS">English pounds</option>
+        <option value="YEN">Japanese Yen</option>
+        <option value="EUROS">Euros</option>
+      </select><br><br>
+</div>
+
+<div class="result">
+      <p  id="result"></p><br>
+</div>
+
+
+<button class="button" value='0' onclick="enterVal(0)">0</button>
+<button class="button" value='1' onclick="enterVal(1)">1</button>
+<button class="button" value='2' onclick="enterVal(2)">2</button>
+<button class="button" value='3' onclick="enterVal(3)">3</button>
+<button class="button" value='4' onclick="enterVal(4)">4</button><br>
+<button class="button" value='5' onclick="enterVal(5)">5</button>
+<button class="button" value='6' onclick="enterVal(6)">6</button>
+<button class="button" value='7' onclick="enterVal(7)">7</button>
+<button class="button" value='8' onclick="enterVal(8)">8</button>
+<button class="button" value='9' onclick="enterVal(9)">9</button>
+<br>
+<button class="buttonB" onclick="convert()">Convert</button>
+
+
+<script>
+        function enterVal(num) {
+        
+        var curValue = document.getElementById("inputval").value;
+        var newValue = (curValue * 10) + num;
+          document.getElementById("inputval").value = newValue;
+          
+        }
+
+        function convert() {
+            var usVal =  document.getElementById("inputval").value;
+            var finalVal = 0;
+
+            var e = document.getElementById("selectCur");
+            var select = e.options[e.selectedIndex].value;
+            var Currency;
+            console.log("Selected: " + select);
+
+            switch(select) {
+                case "POUNDS":
+                    finalVal =(usVal * 0.78).toFixed(2);
+                    Currency = "English pounds";
+                break;
+
+                case "YEN":
+                    finalVal =(usVal * 113.8).toFixed(2);
+                    Currency = "Japanese yen";
+                break;
+
+                case "EUROS":
+                    finalVal =(usVal * 0.89).toFixed(2);
+                    Currency = "Euros"
+                break;
+
+                default: break;
+            }
+
+            document.getElementById("result").innerHTML = "The value of $" + usVal + 
+                   " US dollars is " + finalVal+ " in " + Currency;
+        }
+       
+</script>
+
+
+</body>
+</html>
